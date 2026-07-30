@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-white text-black antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TECH // MINIMAL{% endblock %}</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#000000',
+                            dark: '#121212',
+                            gray: '#737373',
+                            light: '#F5F5F5',
+                            white: '#FFFFFF',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen bg-white text-black selection:bg-black selection:text-white">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-black/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- BRAND LOGO -->
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold tracking-tighter uppercase font-mono-tech flex items-center gap-1">
+                        <span class="bg-black text-white px-2 py-0.5">TECHX</span>
+                        <span>//</span>
+                        <span class="text-xs tracking-widest text-brand-gray font-normal hidden sm:inline">TECHSTORE</span>
+                    </a>
+                </div>
+
+                <!-- SEARCH BAR -->
+                <div class="flex-1 max-w-md mx-4 sm:mx-8">
+                    <form action="/tim-kiem/" method="GET" class="relative">
+                        <input 
+                            type="text" 
+                            name="q" 
+                            placeholder="TÌM KIẾM SẢN PHẨM..." 
+                            value="{{ request.GET.q|default:'' }}"
+                            class="w-full bg-brand-light text-black text-xs font-mono-tech uppercase py-2 px-4 pr-10 border border-transparent focus:border-black focus:bg-white focus:outline-none transition-all placeholder:text-brand-gray"
+                            required
+                        >
+                        <button type="submit" class="absolute right-0 top-0 h-full px-3 text-black hover:text-brand-gray transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- RIGHT NAV ACTIONS -->
+                <div class="flex items-center space-x-6 text-xs font-mono-tech uppercase tracking-wider">
+                    <a href="/san-pham/" class="hover:underline underline-offset-4 hidden md:block">Sản Phẩm</a>
+                    <a href="/lien-he/" class="hover:underline underline-offset-4 hidden md:block">Liên Hệ</a>
+                    
+                    <!-- CART ICON LINK -->
+                    <a href="/gio-hang/" class="relative p-1 hover:opacity-70 transition-opacity">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow">
+        {% block content %}
+        <!-- Nội dung của từng trang con sẽ chèn vào đây -->
+        {% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white border-t border-black mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                
+                <!-- Col 1: About -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold tracking-widest font-mono-tech uppercase">TECHX // HARDWARE</h3>
+                    <p class="text-xs text-brand-gray leading-relaxed">
+                        Cung cấp thiết bị công nghệ tối giản, tối ưu hiệu năng cho Developer & Designer.
+                    </p>
+                </div>
+
+                <!-- Col 2: Navigation -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold tracking-widest font-mono-tech text-brand-gray uppercase">Danh Mục</h4>
+                    <ul class="space-y-2 text-xs font-mono-tech">
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Laptop / Ultrabook</a></li>
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Bàn phím cơ</a></li>
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Màn hình High-Hz</a></li>
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Phụ kiện minimalist</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Support -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold tracking-widest font-mono-tech text-brand-gray uppercase">Hỗ Trợ</h4>
+                    <ul class="space-y-2 text-xs font-mono-tech">
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Vận chuyển & Đổi trả</a></li>
+                        <li><a href="#" class="hover:text-brand-gray transition-colors">Điều khoản dịch vụ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Newsletter -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold tracking-widest font-mono-tech text-brand-gray uppercase">Đăng Ký Nhận Tin</h4>
+                    <form class="flex flex-col gap-2">
+                        <input 
+                            type="email" 
+                            placeholder="EMAIL CỦA BẠN..." 
+                            class="bg-brand-dark text-white text-xs font-mono-tech p-2.5 border border-white/20 focus:border-white focus:outline-none placeholder:text-brand-gray"
+                        >
+                        <button type="submit" class="bg-white text-black font-mono-tech text-xs py-2.5 font-bold uppercase hover:bg-brand-light transition-colors">
+                            Đăng ký
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-[10px] font-mono-tech text-brand-gray uppercase gap-4">
+                <p>&copy; 2026 TECHX TECHSTORE. ALL RIGHTS RESERVED.</p>
+                <p>DESIGNED WITH MONOCHROME CONCEPT</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
