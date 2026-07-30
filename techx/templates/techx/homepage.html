@@ -1,0 +1,118 @@
+{% extends 'techx/base.html' %}
+
+{% block title %}TECHX // HOMEPAGE{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="border-b border-neutral-800 px-6 py-20 bg-neutral-950 flex flex-col justify-center items-start max-w-7xl mx-auto w-full">
+    <div class="inline-flex items-center gap-2 border border-neutral-800 px-3 py-1 text-[10px] text-neutral-400 mb-6 uppercase tracking-widest">
+        <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+        SYS_STATUS: ONLINE / DROP 04
+    </div>
+    <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tight leading-none mb-6">
+        <span class="text-gray-300">
+            HIGH PERFORMANCE.
+        </span>
+        <br/><span class="text-neutral-500">ZERO BLOATWARE.</span>
+    </h1>
+    <p class="text-xs text-neutral-400 max-w-lg leading-relaxed mb-8 uppercase">
+        Thiết bị công nghệ tối giản, tập trung vào hiệu năng thực tế, cấu hình phần cứng thuần túy và độ bền công nghiệp.
+    </p>
+    <a href="#catalog" class="bg-white text-black text-xs font-bold px-6 py-3 uppercase tracking-wider hover:bg-neutral-300 transition">
+        [ Explore Gear ]
+    </a>
+</section>
+
+<!-- MAIN PRODUCT CATALOG -->
+<main id="catalog" class="flex-grow px-6 py-12 max-w-7xl mx-auto w-full">
+    <div class="flex justify-between items-end mb-8 border-b border-neutral-800 pb-4">
+        <div>
+            <span class="text-[10px] text-neutral-500 uppercase tracking-widest">// HARDWARE_GRID</span>
+            <h2 class="text-lg font-bold uppercase">DANH SÁCH THIẾT BỊ</h2>
+        </div>
+        <span class="text-xs text-neutral-500 font-mono">{{ products|length }} UNITS READY</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+            {% with variant=product.variants.first %}
+            <div class="border border-neutral-800 bg-neutral-950 p-4 flex flex-col justify-between hover:border-white transition-all group">
+                <div>
+                    <!-- IMAGE / PLACEHOLDER -->
+                    <div class="aspect-square bg-neutral-900 border border-neutral-800 mb-4 flex items-center justify-center relative overflow-hidden">
+                        {% if variant and variant.image %}
+                            <img src="{{ variant.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover grayscale group-hover:scale-105 transition duration-500">
+                        {% else %}
+                            <div class="text-center">
+                                <span class="text-[10px] font-bold text-neutral-600 tracking-widest block">NO_IMAGE</span>
+                                <span class="text-[9px] text-neutral-700 uppercase">TECHX_STD</span>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- BRAND TAG -->
+                        <span class="absolute top-2 left-2 bg-black/80 border border-neutral-800 text-[9px] px-2 py-0.5 text-neutral-300 uppercase font-bold">
+                            {{ product.brand }}
+                        </span>
+                    </div>
+
+                    <!-- CATEGORY & TITLE -->
+                    <div class="text-[10px] text-neutral-500 uppercase tracking-wider mb-1">
+                        {{ product.category.name }}
+                    </div>
+                    <h3 class="font-bold text-sm uppercase tracking-tight mb-3 group-hover:text-white text-neutral-200">
+                        <a href="#">{{ product.name }}</a>
+                    </h3>
+
+                    <!-- QUICK SPECS DISPLAY -->
+                    <div class="space-y-1 mb-4 border-t border-b border-neutral-900 py-2">
+                        {% for spec in product.specs.all|slice:":2" %}
+                            <div class="flex justify-between text-[10px]">
+                                <span class="text-neutral-500 uppercase">{{ spec.key }}:</span>
+                                <span class="text-neutral-300 truncate max-w-[120px]">{{ spec.value }}</span>
+                            </div>
+                        {% empty %}
+                            <div class="text-[10px] text-neutral-600">// STANDARD_SPEC</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- COLOR / OPTION TAGS -->
+                    {% if variant %}
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            <span class="text-[9px] border border-neutral-800 px-1.5 py-0.5 text-neutral-400 uppercase">
+                                CLR: {{ variant.color_name }}
+                            </span>
+                            {% if variant.spec_option %}
+                            <span class="text-[9px] border border-neutral-800 px-1.5 py-0.5 text-neutral-400 uppercase">
+                                {{ variant.spec_option }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- PRICE & ACTION -->
+                <div class="pt-3 border-t border-neutral-800 flex justify-between items-center mt-2">
+                    <div>
+                        <span class="text-[9px] text-neutral-500 block">PRICE</span>
+                        <span class="font-bold text-sm text-white">
+                            {% if variant %}
+                                {{ variant.price }} đ
+                            {% else %}
+                                CONTACT
+                            {% endif %}
+                        </span>
+                    </div>
+                    <button class="text-[10px] font-bold border border-white px-3 py-1.5 uppercase hover:bg-white hover:text-black transition">
+                        + ADD
+                    </button>
+                </div>
+            </div>
+            {% endwith %}
+        {% empty %}
+            <div class="col-span-full py-16 text-center border border-dashed border-neutral-800">
+                <p class="text-xs text-neutral-500 uppercase">[ SYSTEM ERROR: NO PRODUCTS FOUND IN DATABASE ]</p>
+            </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

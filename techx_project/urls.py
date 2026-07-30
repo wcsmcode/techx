@@ -24,6 +24,7 @@ from techx import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('base/', views.base, name='base'),
+    path('', views.techx_homepage, name='homepage'),
 ]
 
 if settings.DEBUG:
