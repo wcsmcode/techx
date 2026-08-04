@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}SẢN PHẨM // TECHX{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- BREADCRUMB & HEADER -->
+    <div class="border-b border-black/10 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <span class="text-[10px] font-mono-tech text-brand-gray uppercase tracking-widest">// CATALOGUE</span>
+            <h1 class="text-3xl font-bold tracking-tighter uppercase font-mono-tech mt-1">
+                TẤT CẢ SẢN PHẨM
+            </h1>
+        </div>
+        <p class="text-xs font-mono-tech text-brand-gray">
+            HIỂN THỊ {{ page_obj.paginator.count }} THIẾT BỊ
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+        
+        <!-- SIDEBAR: FILTER BY CATEGORY -->
+        <aside class="lg:col-span-1 space-y-8">
+            <div>
+                <h3 class="text-xs font-bold tracking-widest font-mono-tech uppercase mb-4 border-b border-black pb-2">
+                    DANH MỤC
+                </h3>
+                <ul class="space-y-2 text-xs font-mono-tech uppercase">
+                    <li>
+                        <a href="{% url 'products:product_list' %}" 
+                           class="block py-1.5 transition-colors {% if not selected_category %}font-bold text-black border-l-2 border-black pl-2{% else %}text-brand-gray hover:text-black{% endif %}">
+                            [TẤT CẢ SẢN PHẨM]
+                        </a>
+                    </li>
+                    {% for cat in categories %}
+                    <li>
+                        <a href="?category={{ cat.slug }}" 
+                           class="block py-1.5 transition-colors {% if selected_category == cat.slug %}font-bold text-black border-l-2 border-black pl-2{% else %}text-brand-gray hover:text-black{% endif %}">
+                            {{ cat.name }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="text-brand-gray text-[11px] italic">Chưa có danh mục</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- STATUS FILTER / BANNER NHỎ (NẾU CẦN) -->
+            <div class="p-4 bg-brand-light border border-black/10 text-xs font-mono-tech space-y-2">
+                <span class="font-bold uppercase">// CAM KẾT TECHX</span>
+                <p class="text-[11px] text-brand-gray leading-relaxed">
+                    100% Sản phẩm chính hãng. Bảo hành 1 đổi 1 trong 30 ngày cho lỗi phần cứng.
+                </p>
+            </div>
+        </aside>
+
+        <!-- MAIN PRODUCT GRID -->
+        <section class="lg:col-span-3">
+            
+            {% if page_obj %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for product in page_obj %}
+                <div class="group relative bg-white border border-black/10 hover:border-black transition-all flex flex-col justify-between">
+                    
+                    <!-- PRODUCT IMAGE & BADGES -->
+                    <div class="relative aspect-square bg-brand-light overflow-hidden flex items-center justify-center p-4">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" 
+                                 alt="{{ product.name }}" 
+                                 class="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300">
+                        {% else %}
+                            <div class="text-[10px] font-mono-tech text-brand-gray uppercase">NO IMAGE</div>
+                        {% endif %}
+
+                        <!-- BADGES -->
+                        <div class="absolute top-2 left-2 flex flex-col gap-1 font-mono-tech text-[10px] uppercase font-bold">
+                            {% if not product.in_stock %}
+                                <span class="bg-black text-white px-2 py-0.5">HẾT HÀNG</span>
+                            {% elif product.discount_percent %}
+                                <span class="bg-white text-black border border-black px-2 py-0.5">-{{ product.discount_percent }}%</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT INFO -->
+                    <div class="p-4 flex-grow flex flex-col justify-between border-t border-black/5">
+                        <div>
+                            <span class="text-[10px] font-mono-tech text-brand-gray uppercase">
+                                {{ product.category.name|default:"HARDWARE" }}
+                            </span>
+                            <h2 class="text-sm font-bold text-black uppercase font-mono-tech tracking-tight line-clamp-2 mt-1 group-hover:underline underline-offset-4">
+                                <a href="/san-pham/{{ product.id }}/">
+                                    {{ product.name }}
+                                </a>
+                            </h2>
+                        </div>
+
+                        <!-- PRICE SECTION -->
+                        <div class="mt-4 pt-3 border-t border-dashed border-black/10 flex items-baseline justify-between font-mono-tech">
+                            {% if product.old_price %}
+                                <span class="text-xs text-brand-gray line-through">
+                                    {{ product.old_price|intcomma }}đ
+                                </span>
+                            {% endif %}
+                            <span class="text-sm font-bold text-black ml-auto">
+                                {{ product.price|intcomma }}đ
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ACTION BUTTON -->
+                    <a href="/san-pham/{{ product.id }}/" 
+                       class="block w-full bg-black text-white text-center py-2 text-xs font-mono-tech uppercase tracking-wider hover:bg-brand-gray transition-colors">
+                        XEM CHI TIẾT
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- PAGINATION -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-12 pt-6 border-t border-black/10 flex justify-center items-center gap-2 font-mono-tech text-xs">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                       class="px-3 py-1.5 border border-black hover:bg-black hover:text-white transition-colors">
+                        &lt; TRƯỚC
+                    </a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="px-3 py-1.5 bg-black text-white font-bold border border-black">
+                            {{ num }}
+                        </span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                           class="px-3 py-1.5 border border-black/20 hover:border-black transition-colors">
+                            {{ num }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                       class="px-3 py-1.5 border border-black hover:bg-black hover:text-white transition-colors">
+                        SAU &gt;
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- EMPTY STATE -->
+            <div class="py-20 text-center border border-dashed border-black/20">
+                <p class="font-mono-tech text-xs text-brand-gray uppercase">
+                    [NO_PRODUCTS_FOUND] // KHÔNG CÓ SẢN PHẨM PHÙ HỢP.
+                </p>
+                <a href="{% url 'products:product_list' %}" class="inline-block mt-4 text-xs font-mono-tech font-bold uppercase underline underline-offset-4">
+                    Xóa bộ lọc
+                </a>
+            </div>
+            {% endif %}
+
+        </section>
+    </div>
+</div>
+{% endblock %}
