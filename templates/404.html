@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-16">
+    <div class="border-2 border-black p-8 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full space-y-4">
+        <h1 class="text-6xl font-black font-mono-tech">[ 404 ]</h1>
+        <p class="text-sm font-bold uppercase font-mono-tech">// TRANG KHÔNG TỒN TẠI HOẶC ĐÃ BỊ XÓA</p>
+        <p class="text-xs text-gray-600 leading-relaxed">
+            Đường dẫn bạn đang truy cập không hợp lệ hoặc sản phẩm/bài viết này đã bị xóa khỏi hệ thống.
+        </p>
+        <div class="pt-4">
+            <a href="/" class="inline-block w-full border-2 border-black bg-black text-white py-3 text-xs font-mono-tech font-bold uppercase hover:bg-white hover:text-black transition-colors">
+                <- TRỞ VỀ TRANG CHỦ
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

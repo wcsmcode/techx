@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}{{ product.name }} | TECHX{% endblock %}
+
+{% block content %}
+<main class="max-w-7xl mx-auto px-4 py-12 font-mono-tech">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <!-- Ảnh sản phẩm -->
+        <div class="border-2 border-black p-4">
+            {% with main_image=product.default_variant.image %}
+                {% if main_image %}
+                    <img src="{{ main_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-cover">
+                {% else %}
+                    <div class="w-full h-96 bg-gray-200 flex items-center justify-center font-bold">[ NO IMAGE ]</div>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Thông tin chi tiết -->
+        <div class="space-y-6">
+            <h1 class="text-3xl font-black uppercase border-b-2 border-black pb-4">{{ product.name }}</h1>
+            {% if variants %}
+                <p class="text-xl font-bold">VND: {{ variants.0.price|intcomma }}</p>
+            {% else %}
+                <p class="text-xl font-bold text-gray-500">LIÊN HỆ</p>
+            {% endif %}
+            <p class="text-xs text-gray-600 leading-relaxed">{{ product.description }}</p>
+
+            <!-- Danh sách Biến thể (Variants) -->
+            {% if variants %}
+            <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase">// BIẾN THỂ:</label>
+                <div class="flex gap-2">
+                    {% for v in variants %}
+                        <button class="border border-black px-3 py-1 text-xs hover:bg-black hover:text-white transition-colors">
+                            {{ v.sku }}
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+                <p class="text-xs text-gray-500 italic">// Sản phẩm này hiện không có biến thể.</p>
+            {% endif %}
+
+            <button class="w-full bg-black text-white font-bold py-4 uppercase border-2 border-black hover:bg-white hover:text-black transition-colors">
+                [ THÊM VÀO GIỎ HÀNG ]
+            </button>
+        </div>
+    </div>
+</main>
+{% endblock %}

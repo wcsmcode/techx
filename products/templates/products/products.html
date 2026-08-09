@@ -18,6 +18,12 @@
             HIỂN THỊ {{ page_obj.paginator.count }} THIẾT BỊ
         </p>
     </div>
+    {% if query %}
+        <div class="mb-6 font-mono-tech text-xs border-b border-black pb-2">
+            // KẾT QUẢ TÌM KIẾM CHO: <span class="font-bold bg-black text-white px-2 py-0.5">"{{ query }}"</span> 
+            ({{ products.count }} SẢN PHẨM)
+        </div>
+    {% endif %}
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
         
@@ -66,17 +72,19 @@
                     
                     <!-- PRODUCT IMAGE & BADGES -->
                     <div class="relative aspect-square bg-brand-light overflow-hidden flex items-center justify-center p-4">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" 
-                                 alt="{{ product.name }}" 
-                                 class="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300">
-                        {% else %}
-                            <div class="text-[10px] font-mono-tech text-brand-gray uppercase">NO IMAGE</div>
-                        {% endif %}
+                        {% with main_image=product.default_variant.image %}
+                            {% if main_image %}
+                                <img src="{{ main_image.url }}" 
+                                     alt="{{ product.name }}" 
+                                     class="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300">
+                            {% else %}
+                                <div class="text-[10px] font-mono-tech text-brand-gray uppercase">NO IMAGE</div>
+                            {% endif %}
+                        {% endwith %}
 
                         <!-- BADGES -->
                         <div class="absolute top-2 left-2 flex flex-col gap-1 font-mono-tech text-[10px] uppercase font-bold">
-                            {% if not product.in_stock %}
+                            {% if product.default_variant.stock == 0 %}
                                 <span class="bg-black text-white px-2 py-0.5">HẾT HÀNG</span>
                             {% elif product.discount_percent %}
                                 <span class="bg-white text-black border border-black px-2 py-0.5">-{{ product.discount_percent }}%</span>
@@ -91,7 +99,7 @@
                                 {{ product.category.name|default:"HARDWARE" }}
                             </span>
                             <h2 class="text-sm font-bold text-black uppercase font-mono-tech tracking-tight line-clamp-2 mt-1 group-hover:underline underline-offset-4">
-                                <a href="/san-pham/{{ product.id }}/">
+                                <a href="{% url 'products:product_detail' product.slug %}">
                                     {{ product.name }}
                                 </a>
                             </h2>
@@ -105,13 +113,13 @@
                                 </span>
                             {% endif %}
                             <span class="text-sm font-bold text-black ml-auto">
-                                {{ product.price|intcomma }}đ
+                                {{ product.default_variant.price|intcomma }}đ
                             </span>
                         </div>
                     </div>
 
                     <!-- ACTION BUTTON -->
-                    <a href="/san-pham/{{ product.id }}/" 
+                    <a href="{% url 'products:product_detail' product.slug %}" 
                        class="block w-full bg-black text-white text-center py-2 text-xs font-mono-tech uppercase tracking-wider hover:bg-brand-gray transition-colors">
                         XEM CHI TIẾT
                     </a>
@@ -166,4 +174,7 @@
         </section>
     </div>
 </div>
+<script>
+    console.log("Product: {{ product.name }} | Image URL: {{ product.image.url }}");
+</script>
 {% endblock %}

@@ -60,7 +60,7 @@
                         {{ product.category.name }}
                     </div>
                     <h3 class="font-bold text-sm uppercase tracking-tight mb-3 group-hover:text-white text-neutral-200">
-                        <a href="#">{{ product.name }}</a>
+                        <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
                     </h3>
 
                     <!-- QUICK SPECS DISPLAY -->
