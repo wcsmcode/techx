@@ -26,25 +26,55 @@
             {% endif %}
             <p class="text-xs text-gray-600 leading-relaxed">{{ product.description }}</p>
 
-            <!-- Danh sách Biến thể (Variants) -->
-            {% if variants %}
-            <div class="space-y-2">
-                <label class="block text-xs font-bold uppercase">// BIẾN THỂ:</label>
-                <div class="flex gap-2">
-                    {% for v in variants %}
-                        <button class="border border-black px-3 py-1 text-xs hover:bg-black hover:text-white transition-colors">
-                            {{ v.sku }}
-                        </button>
-                    {% endfor %}
-                </div>
-            </div>
-            {% else %}
-                <p class="text-xs text-gray-500 italic">// Sản phẩm này hiện không có biến thể.</p>
-            {% endif %}
+            <!-- FORM THÊM VÀO GIỎ HÀNG -->
+            <form id="add-to-cart-form" action="{% url 'cart:cart_add' variants.0.id %}" method="POST" class="space-y-4">
+                {% csrf_token %}
 
-            <button class="w-full bg-black text-white font-bold py-4 uppercase border-2 border-black hover:bg-white hover:text-black transition-colors">
-                [ THÊM VÀO GIỎ HÀNG ]
-            </button>
+                <!-- Biến thể (Chọn variant sẽ tự đổi ID trong form) -->
+                {% if variants %}
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase">// BIẾN THỂ:</label>
+                    <div class="flex flex-wrap gap-2">
+                        {% for v in variants %}
+                            <button type="button" 
+                                    data-variant-id="{{ v.id }}"
+                                    data-price="{{ v.price }}"
+                                    class="variant-btn border border-black px-3 py-1 text-xs hover:bg-black hover:text-white transition-colors {% if forloop.first %}bg-black text-white{% endif %}">
+                                {{ v.sku|default:v.sku }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Ô Chọn Số Lượng -->
+                <div class="flex items-center gap-3 pt-2">
+                    <label class="text-xs font-mono-tech font-bold uppercase">// SỐ LƯỢNG:</label>
+                    <input type="number" name="quantity" value="1" min="1" max="99" 
+                        class="w-16 border-2 border-black py-1 px-2 text-center text-xs font-mono-tech font-bold focus:outline-none">
+                </div>
+
+                <!-- Nút Submit -->
+                <button type="submit" class="w-full bg-black text-white font-bold py-4 uppercase border-2 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                    [ THÊM VÀO GIỎ HÀNG ]
+                </button>
+            </form>
+
+            <!-- JS xử lý chọn Variant linh hoạt -->
+            <script>
+                document.querySelectorAll('.variant-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // 1. Đổi active style cho button variant
+                        document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('bg-black', 'text-white'));
+                        this.classList.add('bg-black', 'text-white');
+
+                        // 2. Cập nhật action URL của Form theo variant_id vừa chọn
+                        const variantId = this.dataset.variantId;
+                        const form = document.getElementById('add-to-cart-form');
+                        form.action = `/cart/add/${variantId}/`;
+                    });
+                });
+            </script>
         </div>
     </div>
 </main>

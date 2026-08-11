@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{%load humanize %}
 {% block title %}TECHX // HOMEPAGE{% endblock %}
 
 {% block content %}
@@ -91,21 +91,25 @@
                 </div>
 
                 <!-- PRICE & ACTION -->
-                <div class="pt-3 border-t border-neutral-800 flex justify-between items-center mt-2">
-                    <div>
-                        <span class="text-[9px] text-neutral-500 block">PRICE</span>
-                        <span class="font-bold text-sm text-white">
-                            {% if variant %}
-                                {{ variant.price }} đ
-                            {% else %}
-                                CONTACT
-                            {% endif %}
-                        </span>
+                <form id="add-to-cart-form" action="{% url 'cart:cart_add' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="pt-3 border-t border-neutral-800 flex justify-between items-center mt-2">
+                        <div>
+                            <span class="text-[9px] text-neutral-500 block">PRICE</span>
+                            <span class="font-bold text-sm text-white">
+                                {% if variant %}
+                                    {{ variant.price|intcomma }} đ
+                                {% else %}
+                                    CONTACT
+                                {% endif %}
+                            </span>
+                        </div>
+                        <button type="submit" class="text-[10px] text-white font-bold border border-white px-3 py-1.5 uppercase hover:bg-white hover:text-black transition">
+                            + ADD
+                        </button>
                     </div>
-                    <button class="text-[10px] font-bold border border-white px-3 py-1.5 uppercase hover:bg-white hover:text-black transition">
-                        + ADD
-                    </button>
-                </div>
+                </form>
+                
             </div>
             {% endwith %}
         {% empty %}
